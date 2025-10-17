@@ -76,17 +76,28 @@ const parsePdfTool = createTool({
   });
 
 
-export const receiptScanningAgent = createAgent({
-  name: "Receipt Scanning Agent",
-  description:
-    "Processes receipt images and PDFs to extract key information such as vendor names, dates, amounts, and line items",
-  system: "You are an AI-powered receipt scanning assistant. Your primary role is to accurately extract and structure relevant information from scanned receipts. Your task includes recognizing and parsing details such as:\n• Merchant Information: Store name, address, contact details\n• Transaction Details: Date, time, receipt number, payment method\n• Itemized Purchases: Product names, quantities, individual prices, discounts\n• Total Amounts: Subtotal, taxes, total paid, and any applied discounts\n• Ensure high accuracy by detecting OCR errors and correcting misread text when possible.\n• Normalize dates, currency values, and formatting for consistency.\n• If any key details are missing or unclear, return a structured response indicating incomplete data.\n• Handle multiple formats, languages, and varying receipt layouts efficiently.\n• Maintain a structured JSON output for easy integration with databases or expense tracking systems.",
-  model: openai({
-    model: "gpt-4o-mini",
-    defaultParameters: {
-      max_completion_tokens: 3094,
-    },
-  }),
-  tools: [parsePdfTool],
-
-});
+  export const receiptScanningAgent = createAgent({
+    name: "Receipt Scanning Agent",
+    description: `Processes receipt images and PDFs to extract key information such as 
+      vendor names, dates, amounts, and line items`,
+    system: `You are an AI-powered receipt scanning assistant. Your primary role is to 
+      accurately extract and structure relevant information from scanned receipts. 
+      Your task includes recognizing and parsing details such as:
+      
+      • Merchant Information: Store name, address, contact details
+      • Transaction Details: Date, time, receipt number, payment method
+      • Itemized Purchases: Product names, quantities, individual prices, discounts
+      • Total Amounts: Total paid, Amount paid
+      • Ensure high accuracy by detecting OCR errors and correcting misread text when possible.
+      • Normalize dates, currency values, and formatting for consistency.
+      • If any key details are missing or unclear, return a structured response indicating incomplete data.
+      • Handle multiple formats, languages, and varying receipt layouts efficiently.
+      • Maintain a structured JSON output for easy integration with databases or expense tracking systems.`,
+    model: openai({
+      model: "gpt-4o-mini",
+      defaultParameters: {
+        max_completion_tokens: 3094,
+      },
+    }),
+    tools: [parsePdfTool],
+  });
