@@ -6,7 +6,8 @@ import {
 import { createServer } from "@inngest/agent-kit/server";
 import { inngest } from "@/inngest/client";
 import Events from "./constants";
-
+import { databaseAgent } from "./agents/databaseAgent";
+import { receiptScanningAgent } from "./agents/receiptScanningAgent";
 
 const agentNetwork = createNetwork({
     name: "Agent Team",
@@ -14,7 +15,7 @@ const agentNetwork = createNetwork({
         databaseAgent, receiptScanningAgent
 ],
 defaultModel: anthropic({
-    model: "claude-3-5-sonnet-latest",
+    model: "claude-3-7-sonnet-20250219",
     defaultParameters: {
     max_tokens: 1000,
     },
@@ -41,9 +42,9 @@ export const server = createServer({
     { id: "Extract PDF and Save in Database" },
     { event: Events.EXTRACT_DATA_FROM_PDF_AND_SAVE_TO_DATABASE },
     async ({ event }) => {
-      const result = await agentNetwork.run(
-        "Extract the key data from this pdf: ${event.data.url}. Once the data is extracted, save it to the database using the receiptId: ${event.data.receiptId}. Once the receipt is successfully saved to the database you can terminate the agent process.",
-      );
+        const result = await agentNetwork.run(
+            `Extract the key data from this pdf: ${event.data.url}. Once the data is extracted, save it to the database using the receiptId: ${event.data.receiptId}. Once the receipt is successfully saved to the database you can terminate the agent process.`,
+        );
       
       return result.state.kv.get("receipt");
     },

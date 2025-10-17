@@ -1,6 +1,7 @@
 import { Inngest } from "inngest";
 
-
-//create a client
-export const inngest = new Inngest({ id:"youtube-build" });
+export const inngest = new Inngest({ 
+  id: "receipt-tracker",
+  name: "Receipt Tracker"
+});
 
