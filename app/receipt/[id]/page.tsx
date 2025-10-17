@@ -246,15 +246,15 @@ function Receipt() {
                         {receipt.receiptSummary && (
                         <>
                             {isSummariesEnabled ? (
-                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-100 shadow-sm">
+                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-100 shadow-sm mt-10">
                                 <div className="flex items-center mb-4">
-                                <h4 className="font-semibold text-blue-700">
-                                    AI Summary
-                                </h4>
-                                <div className="ml-2 flex">
-                                    <Sparkles className="h-3.5 w-3.5 text-yellow-500" />
-                                    <Sparkles className="h-3 w-3 text-yellow-400 -ml-1" />
-                                </div>
+                                    <h4 className="font-semibold text-blue-700">
+                                        AI Summary
+                                    </h4>
+                                    <div className="ml-2 flex">
+                                        <Sparkles className="h-3.5 w-3.5 text-yellow-500" />
+                                        <Sparkles className="h-3 w-3 text-yellow-400 -ml-1" />
+                                    </div>
                                 </div>
                                 <div className="bg-white bg-opacity-60 rounded-lg p-4 border border-blue-100">
                                 <p className="text-sm whitespace-pre-line leading-relaxed text-gray-700">
@@ -271,40 +271,41 @@ function Receipt() {
                             ) : (
                             <>
                                 <div className="mt-6 bg-gray-100 p-6 rounded-lg border border-gray-200 shadow-sm">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center">
-                                    <h4 className="font-semibold text-gray-500">
-                                        AI Summary
-                                    </h4>
-                                    <div className="ml-2 flex">
-                                        <Sparkles className="h-3.5 w-3.5 text-gray-400" />
-                                        <Sparkles className="h-3 w-3 text-gray-300 -ml-1" />
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center">
+                                            <h4 className="font-semibold text-gray-500">
+                                                AI Summary
+                                            </h4>
+                                            <div className="ml-2 flex">
+                                                <Sparkles className="h-3.5 w-3.5 text-gray-400" />
+                                                <Sparkles className="h-3 w-3 text-gray-300 -ml-1" />
+                                            </div>
+                                        </div>
+                                        <Lock className="flex h-4 w-4 text-gray-500" />
                                     </div>
+                                    <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-gray-200 flex flex-col items-center justify-center">
+                                        <Link
+                                            href="/manage-plan"
+                                            className="text-center py-4"
+                                        >
+                                            <Lock className="h-8 w-8 text-gray-400 mx-auto mb-3" />
+                                            <p className="text-sm text-gray-500 mb-2">
+                                                AI summary is a PRO level feature
+                                            </p>
+                                            <button className="mt-2 px-4 py-1.5 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 inline-block">
+                                            Upgrade to Unlock
+                                            </button>
+                                        </Link>
                                     </div>
-                                </div>
-                                <Lock className="h-4 w-4 text-gray-500" />
                                 </div>
                                 
-                                <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-gray-200 flex flex-col items-center justify-center">
-                                <Link
-                                    href="/manage-plan"
-                                    className="text-center py-4"
-                                >
-                                    <Lock className="h-8 w-8 text-gray-400 mx-auto mb-3" />
-                                    <p className="text-sm text-gray-500 mb-2">
-                                    AI summary is a PRO level feature
-                                    </p>
-                                    <button className="mt-2 px-4 py-1.5 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 inline-block">
-                                    Upgrade to Unlock
-                                    </button>
-                                </Link>
-                                </div>
+                                
                                 
                                 <div className="mt-3 text-xs text-gray-400 italic flex items-center">
-                                <Lightbulb className="h-3 w-3 mr-1" />
-                                <span>
-                                    Get AI-powered insights from your receipts
-                                </span>
+                                    <Lightbulb className="h-3 w-3 mr-1" />
+                                    <span>
+                                        Get AI-powered insights from your receipts
+                                    </span>
                                 </div>
                             </>
                             )}
