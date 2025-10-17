@@ -35,32 +35,48 @@ const parsePdfTool = createTool({
                     {
                         type: "text",
                         text: `Extract the data from the receipt and return the structured output as follows:
-                      {
-                        "merchant": {
-                          "name": "Store Name",
-                          "address": "123 Main St, City, Country",
-                          "contact": "+123456789"
-                        },
-                        "transaction": {
-                          "date": "YYYY-MM-DD",
-                          "receipt_number": "ABC123456",
-                          "payment_method": "Credit Card"
-                        },
-                        "items": [
-                          {
-                            "name": "Item 1",
-                            "quantity": 2,
-                            "unit_price": 10.00,
-                            "total_price": 20.00
-                          }
-                        ],
-                        "totals": {
-                          "subtotal": 20.00,
-                          "tax": 2.00,
-                          "total": 22.00,
-                          "currency": "USD"
-                        }
-                      }`
+
+IMPORTANT FIELD DEFINITIONS:
+- unit_price: The price per unit/item. If only total price is shown, set unit_price = line_total
+- line_total: The total for this specific item line (quantity * unit_price)
+- totals.total: The final amount paid including all taxes
+
+PRICING RULES:
+- If receipt shows both unit price and total: use actual values
+- If receipt only shows total price: set unit_price = line_total, quantity = 1
+- If receipt shows quantity and total: calculate unit_price = line_total / quantity
+
+EXAMPLES:
+1. Detailed receipt: "Apple 3 x $1.50 = $4.50" → unit_price: 1.50, quantity: 3, line_total: 4.50
+2. Service receipt: "UberX Ride $20.22" → unit_price: 20.22, quantity: 1, line_total: 20.22
+3. Quantity receipt: "Bread 2 x $4.00" → unit_price: 2.00, quantity: 2, line_total: 4.00
+
+{
+  "merchant": {
+    "name": "Store Name",
+    "address": "123 Main St, City, Country",
+    "contact": "+123456789"
+  },
+  "transaction": {
+    "date": "YYYY-MM-DD",
+    "receipt_number": "ABC123456",
+    "payment_method": "Credit Card"
+  },
+  "items": [
+    {
+      "name": "Item 1",
+      "quantity": 2,
+      "unit_price": 10.00,
+      "line_total": 20.00
+    }
+  ],
+  "totals": {
+    "subtotal": 20.00,
+    "tax": 2.00,
+    "total": 22.00,
+    "currency": "USD"
+  }
+}`
                       }
                   ],
                   
