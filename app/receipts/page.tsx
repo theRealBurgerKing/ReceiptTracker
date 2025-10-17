@@ -1,4 +1,5 @@
 import PDFDropzone from "@/components/PDFDropzone";
+import ReceiptList from "@/components/ReceiptList";
 // import ReceiptList from "@/components/ReceiptList";
 
 function Receipts() {
@@ -7,7 +8,7 @@ function Receipts() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <PDFDropzone /> 
   
-          {/* <ReceiptList /> */}
+          <ReceiptList />
         </div>
       </div>
     );
