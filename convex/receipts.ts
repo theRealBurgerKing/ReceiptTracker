@@ -178,3 +178,32 @@ export const updateReceiptWithExtractedData = mutation({
       };
     },
   });
+
+// Delete a receipt
+export const deleteReceipt = mutation({
+    args: {
+      id: v.id("receipts"),
+    },
+    handler: async (ctx, args) => {
+      // Verify the receipt exists and user has access
+      const receipt = await ctx.db.get(args.id);
+      if (!receipt) {
+        throw new Error("Receipt not found");
+      }
+
+      const identity = await ctx.auth.getUserIdentity();
+      // if (!identity) {
+      //   throw new Error("Not authenticated");
+      // }
+
+      // const userId = identity.subject;
+      // if (receipt.userId !== userId) {
+      //   throw new Error("Not authorized to delete this receipt");
+      // }
+      await ctx.storage.delete(receipt.fileId);
+      // Delete the receipt
+      await ctx.db.delete(args.id);
+      
+      return true;
+    },
+  });

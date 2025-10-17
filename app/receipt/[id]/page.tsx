@@ -12,8 +12,8 @@ import { Sparkles } from "lucide-react";
 import { Lightbulb } from "lucide-react";
 import { Lock } from "lucide-react";
 import { useSchematicFlag } from "@schematichq/schematic-react";
-
-
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter } from "@/components/ui/table";
+import { deleteReceipt } from "@/actions/deleteReceipt";
 
 
 function Receipt() {
@@ -21,6 +21,8 @@ function Receipt() {
     const [receiptId, setReceiptId] = useState<string | null>(null);
     const router = useRouter();
     const isSummariesEnabled = useSchematicFlag("summary");
+    const [isLoadingDownload, setIsLoadingDownload] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
   
     // Fetch receipt details
     const receipt = useQuery(
@@ -34,7 +36,64 @@ function Receipt() {
       api.receipts.getReceiptDownloadUrl,
       fileId ? { fileId } : "skip",
     );
-  
+    
+    // Function to handle downloading the PDF
+    const handleDownload = async () => {
+        if (!receipt || !receipt.fileId) return;
+    
+        try {
+        setIsLoadingDownload(true);
+    
+        // Use the existing fileDownloadUrl from the query
+        if (!fileDownloadUrl) {
+            throw new Error("Download URL not available");
+        }
+    
+        // Create a temporary link and trigger download
+        const link = document.createElement("a");
+        link.href = fileDownloadUrl;
+        link.download = receipt.fileName || "receipt.pdf";
+        link.target = "_blank";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        } catch (error) {
+            console.error("Error downloading file:", error);
+            alert("Failed to download the file. Please try again.");
+        } finally {
+        setIsLoadingDownload(false);
+        }
+    };
+
+    const handleDeleteReceipt = async () => {
+        if (!receiptId) return;
+      
+        if (
+          window.confirm(
+            "Are you sure you want to delete this receipt? This action cannot be undone."
+          )
+        ) {
+          try {
+            setIsDeleting(true);
+      
+            // Call the server action to delete the receipt
+            const result = await deleteReceipt(receiptId);
+      
+            if (!result.success) {
+              throw new Error(result.error);
+            }
+      
+            // Navigate back to receipts list
+            router.push("/receipts");
+          } catch (error) {
+            console.error("Error deleting receipt:", error);
+            alert("Failed to delete the receipt. Please try again.");
+            setIsDeleting(false);
+          }
+        }
+      };
+
+
     // Convert the URL string ID to a Convex ID
     useEffect(() => {
       try {
@@ -313,7 +372,99 @@ function Receipt() {
                         )}
                     </div>
                     )}
+
+                    {/* Items Section */}
+                    {/* Items Section */}
+                    {receipt.items && receipt.items.length > 0 && (
+                    <div className="mt-6">
+                        <h4 className="font-medium text-gray-700 mb-3">
+                        Items ({receipt.items.length})
+                        </h4>
+                        <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                            <TableRow>
+                                <TableHead>Item</TableHead>
+                                <TableHead>Quantity</TableHead>
+                                <TableHead>Unit Price</TableHead>
+                                <TableHead>Total</TableHead>
+                            </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                            {receipt.items.map((item, index) => (
+                                <TableRow key={index}>
+                                <TableCell className="font-medium">
+                                    {item.name}
+                                </TableCell>
+                                <TableCell>{item.quantity}</TableCell>
+                                <TableCell>
+                                    {formatCurrency(
+                                    item.unitPrice,
+                                    receipt.currency,
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {formatCurrency(
+                                    item.totalPrice,
+                                    receipt.currency,
+                                    )}
+                                </TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                            <TableFooter>
+                            <TableRow>
+                                <TableCell colSpan={3} className="text-right">
+                                Total
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                {formatCurrency(
+                                    receipt.items.reduce(
+                                    (sum, item) => sum + item.totalPrice,
+                                    0,
+                                    ),
+                                    receipt.currency,
+                                )}
+                                </TableCell>
+                            </TableRow>
+                            </TableFooter>
+                        </Table>
+                        </div>
+                    </div>
+                    )}
+
+                    {/* Actions Section */}
+                    <div className="mt-8 border-t pt-6">
+                    <h3 className="text-sm font-medium text-gray-500 mb-4">
+                        Actions
+                    </h3>
+                    <div className="flex flex-wrap gap-3">
+                        <button
+                        className={`px-4 py-2 bg-white border border-gray-300 rounded text-sm text-gray-700 ${
+                            isLoadingDownload
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:bg-gray-50"
+                        }`}
+                        onClick={handleDownload}
+                        disabled={isLoadingDownload || !fileId}
+                        >
+                        {isLoadingDownload ? "Downloading..." : "Download PDF"}
+                        </button>
+                        <button
+                        className={`px-4 py-2 rounded text-sm ${
+                            isDeleting
+                            ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed"
+                            : "bg-red-50 border border-red-200 text-red-600 hover:bg-red-100"
+                        }`}
+                        onClick={handleDeleteReceipt}
+                        disabled={isDeleting}
+                        >
+                        {isDeleting ? "Deleting..." : "Delete Receipt"}
+                        </button>
+                    </div>
+                    </div>
                     {/* End of Extracted Data Section */}
+
                 </div>
                 </div>
           </div>
